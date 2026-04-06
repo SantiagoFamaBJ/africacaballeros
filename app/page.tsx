@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useRef, useState, useCallback } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 
 /* ─── DATOS ─────────────────────────────────── */
@@ -169,9 +169,6 @@ export default function Home() {
   const [openFaq, setOpenFaq]     = useState<number | null>(null);
   const [budget, setBudget]       = useState<"mid" | "high">("mid");
   const [checked, setChecked]     = useState<Set<string>>(new Set());
-  const [muted, setMuted]         = useState(true);
-  const [audioReady, setAudioReady] = useState(false);
-  const audioRef = useRef<HTMLAudioElement>(null);
 
   /* Intersection Observer para fade-up */
   useEffect(() => {
@@ -188,19 +185,6 @@ export default function Home() {
     return () => obs.disconnect();
   }, []);
 
-  /* Audio */
-  const toggleSound = useCallback(() => {
-    const a = audioRef.current;
-    if (!a) return;
-    if (muted) {
-      a.volume = 0.18;
-      a.play().catch(() => {});
-      setMuted(false);
-    } else {
-      a.pause();
-      setMuted(true);
-    }
-  }, [muted]);
 
   const toggleCheck = (key: string) => {
     setChecked((prev) => {
@@ -219,28 +203,6 @@ export default function Home() {
   /* ─── RENDER ──────────────────────────────── */
   return (
     <>
-      {/* Audio ambiente */}
-      <audio ref={audioRef} loop preload="none" onCanPlay={() => setAudioReady(true)}>
-        <source src="https://cdn.freesound.org/previews/353/353194_5121236-lq.mp3" type="audio/mpeg"/>
-      </audio>
-      {/* Botón de sonido */}
-      <button
-        onClick={toggleSound}
-        aria-label={muted ? "Activar sonido" : "Silenciar"}
-        style={{
-          position: "fixed", bottom: 24, left: 20, zIndex: 1000,
-          background: "rgba(44,26,14,0.92)", border: "1px solid rgba(200,136,42,0.5)",
-          borderRadius: "50px", padding: "10px 16px",
-          display: "flex", alignItems: "center", gap: 8,
-          color: "var(--ocre)", cursor: "pointer",
-          fontFamily: "var(--font-caps)", fontSize: 12, letterSpacing: "0.15em",
-          backdropFilter: "blur(8px)",
-        }}
-      >
-        <span style={{ fontSize: 16 }}>{muted ? "🔇" : "🔊"}</span>
-        {muted ? "SONIDO" : "SILENCIAR"}
-      </button>
-
             <div style={{ maxWidth:768, margin:"0 auto", position:"relative" }}>
 
       {/* ── HERO ── */}
@@ -662,27 +624,19 @@ export default function Home() {
         <h2 className="fade-up" style={{ fontFamily:"var(--font-title)", fontWeight:700, lineHeight:1.05, color:"var(--hueso)", fontSize:"clamp(32px,8vw,52px)", marginBottom:6 }}>
           Antes de <em style={{ fontStyle:"italic", color:"var(--ocre)" }}>subir al avión</em>
         </h2>
-        <p className="fade-up" style={{ fontSize:15, color:"var(--ceniza)", marginBottom:28 }}>Tocá para tachar lo que ya está listo.</p>
+        <p className="fade-up" style={{ fontSize:15, color:"var(--ceniza)", marginBottom:28 }}>Todo lo que necesitás para subir al avión.</p>
 
         <div style={{ display:"flex", flexDirection:"column", gap:28 }}>
           {Object.entries(CHECK_ITEMS).map(([group, items]) => (
             <div key={group} className="fade-up">
               <div style={{ fontFamily:"var(--font-caps)", letterSpacing:"0.2em", fontSize:12, color:"var(--savana)", marginBottom:12 }}>{group.toUpperCase()}</div>
               <ul style={{ listStyle:"none", display:"flex", flexDirection:"column", gap:10 }}>
-                {items.map((item) => {
-                  const key = `${group}:${item}`;
-                  const isChecked = checked.has(key);
-                  return (
-                    <li key={item} style={{ display:"flex", gap:12, cursor:"pointer", alignItems:"flex-start" }} onClick={() => toggleCheck(key)}>
-                      <span style={{ flexShrink:0, fontSize:15, color: isChecked ? "var(--savana)" : "rgba(200,136,42,0.35)", marginTop:1, transition:"all 0.2s", lineHeight:1.5 }}>
-                        {isChecked ? "✓" : "○"}
-                      </span>
-                      <span style={{ fontSize:16, color: isChecked ? "rgba(212,196,168,0.4)" : "var(--ceniza)", textDecoration: isChecked ? "line-through" : "none", lineHeight:1.4, transition:"all 0.2s" }}>
-                        {item}
-                      </span>
-                    </li>
-                  );
-                })}
+                {items.map((item) => (
+                  <li key={item} style={{ display:"flex", gap:12, alignItems:"flex-start" }}>
+                    <span style={{ flexShrink:0, fontSize:14, color:"var(--savana)", marginTop:2, lineHeight:1.5 }}>✓</span>
+                    <span style={{ fontSize:16, color:"var(--ceniza)", lineHeight:1.4 }}>{item}</span>
+                  </li>
+                ))}
               </ul>
             </div>
           ))}
