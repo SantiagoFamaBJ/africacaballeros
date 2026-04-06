@@ -221,7 +221,7 @@ export default function Home() {
     <>
       {/* Audio ambiente */}
       <audio ref={audioRef} loop preload="none" onCanPlay={() => setAudioReady(true)}>
-        <source src="https://www.soundsnap.com/sites/default/files/audio/mp3/Africa_Ambience_Birds_Morning_01.mp3" type="audio/mpeg"/>
+        <source src="https://cdn.freesound.org/previews/353/353194_5121236-lq.mp3" type="audio/mpeg"/>
       </audio>
       {/* Botón de sonido */}
       <button
@@ -385,13 +385,12 @@ export default function Home() {
 
             {/* Etiquetas — lado izquierdo para países del oeste, derecho para el este */}
             {/* Mauritania */}
-            <text x="136" y="107" fill="#E8A84A" fontSize="11" fontFamily="'Bebas Neue', sans-serif" letterSpacing="1.5">MAURITANIA</text>
-            <text x="136" y="120" fill="rgba(212,196,168,0.55)" fontSize="8.5" fontFamily="sans-serif">4 días · Tren de hierro</text>
+            <text x="116" y="132" fill="#E8A84A" fontSize="11" fontFamily="'Bebas Neue', sans-serif" letterSpacing="1.5">MAURITANIA</text>
+            <text x="116" y="145" fill="rgba(212,196,168,0.55)" fontSize="8.5" fontFamily="sans-serif">4 días · Tren de hierro</text>
 
-            {/* Egipto — izq */}
-            <text x="60" y="90" fill="#E8A84A" fontSize="11" fontFamily="'Bebas Neue', sans-serif" letterSpacing="1.5">EGIPTO</text>
-            <text x="60" y="103" fill="rgba(212,196,168,0.55)" fontSize="8.5" fontFamily="sans-serif">6 días · Pirámides · Nilo</text>
-            <line x1="90" y1="96" x2="266" y2="96" stroke="rgba(200,136,42,0.2)" strokeWidth="0.5" strokeDasharray="3 3"/>
+            {/* Egipto — derecha del punto */}
+            <text x="282" y="88" fill="#E8A84A" fontSize="11" fontFamily="'Bebas Neue', sans-serif" letterSpacing="1.5">EGIPTO</text>
+            <text x="282" y="101" fill="rgba(212,196,168,0.55)" fontSize="8.5" fontFamily="sans-serif">6 días · Pirámides</text>
 
             {/* Tanzania — derecha */}
             <text x="302" y="315" fill="#E8A84A" fontSize="11" fontFamily="'Bebas Neue', sans-serif" letterSpacing="1.5">TANZANIA</text>
@@ -663,7 +662,7 @@ export default function Home() {
         <h2 className="fade-up" style={{ fontFamily:"var(--font-title)", fontWeight:700, lineHeight:1.05, color:"var(--hueso)", fontSize:"clamp(32px,8vw,52px)", marginBottom:6 }}>
           Antes de <em style={{ fontStyle:"italic", color:"var(--ocre)" }}>subir al avión</em>
         </h2>
-        <p className="fade-up" style={{ fontSize:15, color:"var(--ceniza)", marginBottom:28 }}>Tachá lo que ya tenés listo.</p>
+        <p className="fade-up" style={{ fontSize:15, color:"var(--ceniza)", marginBottom:28 }}>Tocá para tachar lo que ya está listo.</p>
 
         <div style={{ display:"flex", flexDirection:"column", gap:28 }}>
           {Object.entries(CHECK_ITEMS).map(([group, items]) => (
@@ -675,17 +674,10 @@ export default function Home() {
                   const isChecked = checked.has(key);
                   return (
                     <li key={item} style={{ display:"flex", gap:12, cursor:"pointer", alignItems:"flex-start" }} onClick={() => toggleCheck(key)}>
-                      <div style={{
-                        flexShrink:0, width:18, height:18,
-                        border: `1.5px solid ${isChecked ? "var(--savana)" : "rgba(200,136,42,0.45)"}`,
-                        borderRadius:2, marginTop:2,
-                        display:"flex", alignItems:"center", justifyContent:"center",
-                        background: isChecked ? "var(--savana)" : "transparent",
-                        transition:"all 0.2s", fontSize:11, color:"#fff",
-                      }}>
-                        {isChecked && "✓"}
-                      </div>
-                      <span style={{ fontSize:16, color: isChecked ? "rgba(212,196,168,0.45)" : "var(--ceniza)", textDecoration: isChecked ? "line-through" : "none", lineHeight:1.4, transition:"all 0.2s" }}>
+                      <span style={{ flexShrink:0, fontSize:15, color: isChecked ? "var(--savana)" : "rgba(200,136,42,0.35)", marginTop:1, transition:"all 0.2s", lineHeight:1.5 }}>
+                        {isChecked ? "✓" : "○"}
+                      </span>
+                      <span style={{ fontSize:16, color: isChecked ? "rgba(212,196,168,0.4)" : "var(--ceniza)", textDecoration: isChecked ? "line-through" : "none", lineHeight:1.4, transition:"all 0.2s" }}>
                         {item}
                       </span>
                     </li>
