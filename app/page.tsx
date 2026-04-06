@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import Image from "next/image";
 
 /* ─── DATOS ─────────────────────────────────── */
@@ -169,8 +169,10 @@ export default function Home() {
   const [openFaq, setOpenFaq]     = useState<number | null>(null);
   const [budget, setBudget]       = useState<"mid" | "high">("mid");
   const [checked, setChecked]     = useState<Set<string>>(new Set());
+  const [muted, setMuted]         = useState(true);
+  const audioRef = useRef<HTMLAudioElement>(null);
 
-  /* Intersection Observer para fade-up */
+  /* Intersection Observer para fade-up + autoplay al primer scroll/toque */
   useEffect(() => {
     const obs = new IntersectionObserver(
       (entries) => entries.forEach((e) => {
@@ -182,9 +184,41 @@ export default function Home() {
     setTimeout(() => {
       document.querySelectorAll(".hero-fade").forEach((el) => el.classList.add("visible"));
     }, 120);
-    return () => obs.disconnect();
+
+    const startAudio = () => {
+      const a = audioRef.current;
+      if (!a) return;
+      a.volume = 0.25;
+      a.play().then(() => { setMuted(false); }).catch(() => {});
+      window.removeEventListener("scroll", startAudio);
+      window.removeEventListener("touchstart", startAudio);
+      window.removeEventListener("click", startAudio);
+    };
+    window.addEventListener("scroll", startAudio, { once: true });
+    window.addEventListener("touchstart", startAudio, { once: true });
+    window.addEventListener("click", startAudio, { once: true });
+
+    return () => {
+      obs.disconnect();
+      window.removeEventListener("scroll", startAudio);
+      window.removeEventListener("touchstart", startAudio);
+      window.removeEventListener("click", startAudio);
+    };
   }, []);
 
+
+  const toggleSound = useCallback(() => {
+    const a = audioRef.current;
+    if (!a) return;
+    if (muted) {
+      a.volume = 0.25;
+      a.play().catch(() => {});
+      setMuted(false);
+    } else {
+      a.pause();
+      setMuted(true);
+    }
+  }, [muted]);
 
   const toggleCheck = (key: string) => {
     setChecked((prev) => {
@@ -203,7 +237,26 @@ export default function Home() {
   /* ─── RENDER ──────────────────────────────── */
   return (
     <>
-            <div style={{ maxWidth:768, margin:"0 auto", position:"relative" }}>
+            <audio ref={audioRef} loop preload="none">
+        <source src="/ambient.mp3" type="audio/mpeg"/>
+      </audio>
+      <button
+        onClick={toggleSound}
+        aria-label={muted ? "Activar sonido" : "Silenciar"}
+        style={{
+          position:"fixed", bottom:24, left:20, zIndex:1000,
+          background:"rgba(44,26,14,0.92)", border:"1px solid rgba(200,136,42,0.5)",
+          borderRadius:"50px", padding:"10px 16px",
+          display:"flex", alignItems:"center", gap:8,
+          color:"var(--ocre)", cursor:"pointer",
+          fontFamily:"var(--font-caps)", fontSize:12, letterSpacing:"0.15em",
+          backdropFilter:"blur(8px)",
+        }}
+      >
+        <span style={{ fontSize:16 }}>{muted ? "🔇" : "🔊"}</span>
+        {muted ? "SONIDO" : "SILENCIAR"}
+      </button>
+      <div style={{ maxWidth:768, margin:"0 auto", position:"relative" }}>
 
       {/* ── HERO ── */}
       <header style={{ position:"relative", minHeight:"100svh", display:"flex", flexDirection:"column", justifyContent:"flex-end", padding:"0 0 52px", overflow:"hidden" }}>
