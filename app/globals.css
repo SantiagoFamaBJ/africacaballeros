@@ -1,0 +1,63 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300&family=Bebas+Neue&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --savana:   #C8882A;
+  --ocre:     #E8A84A;
+  --tierra:   #8B4A1C;
+  --noche:    #1A1008;
+  --carbon:   #2C1A0E;
+  --safari:   #4A6741;
+  --arena:    #F2DEB8;
+  --hueso:    #FAF0DC;
+  --ceniza:   #D4C4A8;
+  --font-title: 'Playfair Display', Georgia, serif;
+  --font-body:  'Crimson Pro', Georgia, serif;
+  --font-caps:  'Bebas Neue', sans-serif;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--noche);
+  color: var(--arena);
+  font-family: var(--font-body);
+  font-size: 18px;
+  line-height: 1.7;
+  overflow-x: hidden;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.025;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+.fade-up {
+  opacity: 0;
+  transform: translateY(32px);
+  transition: opacity 0.75s ease, transform 0.75s ease;
+}
+.fade-up.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@keyframes scrollpulse {
+  0%, 100% { opacity: 0.4; transform: scaleY(0.7); }
+  50%       { opacity: 1;   transform: scaleY(1); }
+}
+@keyframes dashMove {
+  to { stroke-dashoffset: -20; }
+}
+@keyframes glowpulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.5; }
+}
